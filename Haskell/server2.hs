@@ -7,57 +7,53 @@ import Control.Monad.STM
 import Control.Concurrent.STM.TVar
 import Control.Concurrent.STM.TChan
 import Control.Concurrent.Async
+import Data.Map (Map)
+import qualified Data.Map as Map
 
-talk :: Handle -> TVar Integer -> IO ()
-talk h factor = do
-    hSetBuffering h LineBuffering
-    c <- atomically newTChan
-    race (server h factor c) (receive h c)
-    return ()
-    
-receive :: Handle -> TChan String -> IO ()
-receive h c = forever $ do
-    line <- hGetLine h
-    atomically $ writeTChan c line
-
-server :: Handle -> TVar Integer -> TChan String -> IO ()
-server h factor c = do
-    f <- atomically $ readTVar factor
-    hPrintf h "Current factor: %d\n" f
-    loop f
-    where
-    loop f = do
-        action <- atomically $ do
-            f' <- readTVar factor
-            if (f /= f')
-                then return (newfactor f')
-                else do
-                    l <- readTChan c
-                    return (command f l)
-        action
-        
-    newfactor f = do
-        hPrintf h "new factor: %d\n" f
-        loop f
-        
-    command f s
-     = case s of
-        "end" -> hPutStrLn h ("Ending")
-        '*':s -> do
-            atomically $ writeTVar factor (read s :: Integer)
-            loop f
-        line -> do
-            hPutStrLn h (show (f * (read line :: Integer)))
-            loop f
-                
+main :: IO ()
 main = withSocketsDo $ do
+    server <- newServer
     sock <- listenOn (PortNumber (fromIntegral port))
     printf "Listening on port %d\n" port
-    factor <- atomically $ newTVar 2
     forever $ do
         (handle, host, port) <- accept sock
         printf "Accepted connection from %s: %s\n" host (show port)
-        forkFinally (talk handle factor) (\_ -> hClose handle)
+        forkFinally (talk handle server) (\_ -> hClose handle)
         
+checkAddClient :: Server -> ClientName -> Handle -> IO (Maybe Client)
+checkAddClient server@Server{..} name handle = atomically $ do
+    clientmap <- readTVar clients
+    if Map.member name clientmap
+    then return Nothing
+    else do 
+        client <- newClient name handle
+        writeTVar clients $ Map.insert name client clientmap
+        broadcast server $ Notice (name ++ " has connected")
+        return (Just client)
+        
+removeClient :: Server -> ClientName -> IO ()
+removeClient server@Server{..} name = atomically $ do
+    modifyTVar' clients $ Map.delete name
+    broadcast server $ Notice (name ++ " has disconnected")
+
+talk :: Handle -> Server -> IO ()
+talk handle server@Server{..} = do
+    hSetNewlineMode handle universalNewlineMode
+    hsetBuffering handle LineBuffering
+    readName
+    where
+    readName = do
+        hPutStrLn handle "What is your name?"
+        name <- hGetLine handle
+        if null name
+        then readName
+        else mask $ \restore -> do
+            ok <- checkAddClient server name handle
+            case ok of
+                Nothing -> restore $ do
+                    hPrintf handle "The name %s is in use, please choose another\n" name
+                    readName
+                Just client -> restore (runClient server client) `finally` removeClient server name
+
 port :: Int
 port = 5000
