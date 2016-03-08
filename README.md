@@ -3,7 +3,7 @@ A simple chatting application. Two different versions of the server needed to cr
 
 #Haskell Setup
 To compile run the following command:
-  ghc -o server server.hs
+  ghc -o server chat.hs
 
 The executable server under the name "server" and should now be runnable.
 To connect to the server use the following command:

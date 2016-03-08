@@ -5,7 +5,6 @@ import Text.Printf
 import Control.Monad
 import Control.Concurrent
 import Control.Monad.STM
-import Control.Monad.Writer.Class
 import Control.Concurrent.STM.TVar
 import Control.Concurrent.STM.TChan
 import Control.Concurrent.Async
@@ -156,7 +155,7 @@ runClient serv@Server{..} client@Client {..} = do
 --   formatting for Notice, Tell, Broadcast and Command
 --   /quit : terminates connection with server
 --   /_    : unsupported commands
---    _    : message that is broadcasted to all clients                        
+--    _    : message that is broadcasted to all clients
 handleMessage :: Server -> Client -> Message -> IO Bool
 handleMessage server client@Client{..} message =
     case message of
