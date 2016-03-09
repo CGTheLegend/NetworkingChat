@@ -23,42 +23,39 @@ main = do
 		(_, msg) <- readChan chan
 		loop
 	mainLoop sock chan 0
-	
+
 type Msg = (Int, String)
-	
+
 mainLoop :: Socket -> Chan Msg -> Int -> IO ()
 mainLoop sock chan msgNum = do
 	conn <- accept sock
 	forkIO (runConn conn chan msgNum)
 	mainLoop sock chan $! msgNum + 1
-	
+
 runConn :: (Socket, SockAddr) -> Chan Msg -> Int -> IO ()
 runConn (sock, _) chan msgNum = do
 	let broadcast msg = writeChan chan (msgNum, msg)
 	hdl <- socketToHandle sock ReadWriteMode
 	hSetBuffering hdl NoBuffering
-	
+
 	hPutStrLn hdl "Hi, what's your name?"
 	name <- liftM init (hGetLine hdl)
 	broadcast ("--> " ++ name ++ " entered chat.")
 	hPutStrLn hdl ("Welcome, " ++ name ++"!")
-	
+
 	commLine <- dupChan chan
-	
+
 	reader <- forkIO $ fix $ \loop -> do
 		(nextNum, line) <- readChan commLine
 		when (msgNum /= nextNum) $ hPutStrLn hdl line
 		loop
-		
+
 	handle (\(SomeException _) -> return()) $ fix $ \loop -> do
 		line <- liftM init (hGetLine hdl)
-		case line of 
+		case line of
 			"quit" -> hPutStrLn hdl "Bye!"
 			_ -> broadcast (name ++ ": " ++ line) >> loop
-			
+
 	killThread reader
 	broadcast ("<--" ++ name ++ " left.")
 	hClose hdl
-
-	
-

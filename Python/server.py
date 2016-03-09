@@ -13,7 +13,7 @@ def broadcast_data (sock, message):
 				socket.close()
 				CONNECTION_LIST.remove(socket)
 
-#
+# Main Program
 if __name__ == "__main__":
 	# global data
 	CONNECTION_LIST = []
