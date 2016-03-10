@@ -1,45 +1,44 @@
 import java.net.*;
 import java.io.*;
 
-public class ChatServer
-{  private Socket          socket   = null;
-   private ServerSocket    server   = null;
-   private DataInputStream streamIn =  null;
+public class ChatServer implements Runnable{
+   private ServerSocket     server = null;
+   private Thread           thread = null;
+   private ChatServerThread client = null;
 
    public ChatServer(int port){
-     try{  System.out.println("Listening on port " + port );
+     try{
+         System.out.println("Binding to port " + port + ", please wait  ...");
          server = new ServerSocket(port);
          System.out.println("Server started: " + server);
+         start();
+      }
+      catch(IOException ioe){
+        System.out.println(ioe); }
+   }
+
+   public void run(){
+     while (thread != null){
+       try{
          System.out.println("Waiting for a client ...");
-         socket = server.accept();
-         System.out.println("Client accepted: " + socket);
-         open();
-         boolean done = false;
-         while (!done){  try
-            {  String line = streamIn.readUTF();
-               System.out.println(line);
-               done = line.equals(".bye");
-            }
-            catch(IOException ioe){  done = true;
-            }
+            addThread(server.accept());
          }
-         close();
+         catch(IOException ie){
+           System.out.println("Acceptance Error: " + ie); }
       }
-      catch(IOException ioe){  System.out.println(ioe);
+   }
+
+   public void addThread(Socket socket){
+     System.out.println("Client accepted: " + socket);
+      client = new ChatServerThread(this, socket);
+      try{
+         client.open();
+         client.start();
       }
+      catch(IOException ioe){
+        System.out.println("Error opening thread: " + ioe); }
    }
-   public void open() throws IOException{
-     streamIn = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-   }
-   public void close() throws IOException{
-      if (socket != null)    socket.close();
-      if (streamIn != null)  streamIn.close();
-   }
-   public static void main(String args[]){
-      ChatServer server = null;
-      if (args.length != 1)
-         System.out.println("Usage: java ChatServer port");
-      else
-         server = new ChatServer(Integer.parseInt(args[0]));
-   }
+   public void start()                   { /* no change */ }
+   public void stop()                    { /* no change */ }
+   public static void main(String args[]){ /* no change */ }
 }
