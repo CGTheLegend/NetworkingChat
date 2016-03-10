@@ -1,7 +1,7 @@
 import java.net.*;
 import java.io.*;
 
-public class KnockKnockProtocol {
+public class Protocol {
     // Different states
     private static final int UNREGISTERED = 0;
     private static final int REGISTERING  = 1;
@@ -41,11 +41,10 @@ public class KnockKnockProtocol {
             }
         } else if (state == REGISTERED) {
             if (theInput.equalsIgnoreCase("/exit")) {
-                theOutput = answers[currentJoke] + " Want another? (y/n)";
+                theOutput = " Want another? (y/n)";
                 state = EXIT;
             } else {
                 theOutput = "You're supposed to say \"" +
-                clues[currentJoke] +
                 " who?\"" +
                 "! Try again. Knock! Knock!";
             }
