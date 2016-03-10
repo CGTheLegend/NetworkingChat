@@ -3,16 +3,15 @@ import java.io.*;
 
 public class KnockKnockServer {
     public static void main(String[] args) throws IOException {
+        // Port Number used
+        int port;
+        port = 70000;
 
-        // If no argument set up
-        if (args.length != 1) {
-            System.err.println("Usage: java KnockKnockServer <port number>");
-            System.exit(1);
-        }
-
-        int portNumber = Integer.parseInt(args[0]);
+        // set up port
+        int portNumber = Integer.parseInt(port);
         System.out.println("Listening on port " + portNumber);
 
+        // set up socket
         try (
             ServerSocket serverSocket = new ServerSocket(portNumber);
             Socket clientSocket = serverSocket.accept();
@@ -21,7 +20,7 @@ public class KnockKnockServer {
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(clientSocket.getInputStream()));
         ) {
-
+            // Input & Output strings
             String inputLine, outputLine;
 
             // Initiate conversation with client
@@ -29,6 +28,7 @@ public class KnockKnockServer {
             outputLine = kkp.processInput(null);
             out.println(outputLine);
 
+            // Deal with Input & Output strings 
             while ((inputLine = in.readLine()) != null) {
                 outputLine = kkp.processInput(inputLine);
                 out.println(outputLine);
