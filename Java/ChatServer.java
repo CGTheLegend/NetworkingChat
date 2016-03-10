@@ -1,6 +1,7 @@
 import java.net.*;
 import java.io.*;
 
+//
 public class ChatServer implements Runnable{
    private ServerSocket     server = null;
    private Thread           thread = null;
@@ -8,7 +9,7 @@ public class ChatServer implements Runnable{
 
    public ChatServer(int port){
      try{
-         System.out.println("Binding to port " + port + ", please wait  ...");
+         System.out.println("Listening on port " + port);
          server = new ServerSocket(port);
          System.out.println("Server started: " + server);
          start();
