@@ -1,7 +1,6 @@
 import java.net.*;
 import java.io.*;
 
-//
 public class ChatServer implements Runnable{
    private ServerSocket     server = null;
    private Thread           thread = null;
