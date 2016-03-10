@@ -2,10 +2,10 @@ import socket, select
 
 # Sends a message to the designamted socket
 def broadcast_data (sock, message):
-	for socket in CONNECTION_LIST:
-		# tests if socket is live
-		#  if it is, send message
-		#  else close socket
+    for socket in CONNECTION_LIST:
+        # tests if socket is live
+        #  if it is, send message
+        #  else close socket
         if socket != server_socket and socket != sock :
             try:
                 socket.send(message)
@@ -14,7 +14,7 @@ def broadcast_data (sock, message):
                 CONNECTION_LIST.remove(socket)
                 
 if __name__ == "__main__":
-	# global data
+    # global data
     CONNECTION_LIST = []
     RECV_BUFFER = 4096
     PORT = 6000
@@ -53,11 +53,10 @@ if __name__ == "__main__":
                     if data:
                         if user_names[str(sock.getpeername())] is None:
                             user_names[str(sock.getpeername())] = data.rstrip('\r\n')
-                            #print "New name"
+                            sock.send('Welcome ' + user_names[(str(sock.getpeername()))] + '!\n')
                             broadcast_data(sock, user_names[str(sock.getpeername())] + ' has connected\n')
                         # announce client is leaving and close socket
                         else:
-                            print user_names[str(sock.getpeername())]
                             broadcast_data(sock, "\r" + '<' + user_names[str(sock.getpeername())] + '> ' + data)
                         
                         #broadcast_data(sock, "\r" + '<' + str(sock.getpeername()) + '>' + data)

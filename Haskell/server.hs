@@ -40,9 +40,9 @@ runConn (sock, _) chan msgNum = do
 	hSetBuffering hdl NoBuffering
 
 	-- Prompt user & obtain username
-	hPutStrLn hdl "Hi, what's your name?"
+	hPutStrLn hdl "Please enter a username:"
 	name <- liftM init (hGetLine hdl)
-	broadcast ("--> " ++ name ++ " entered chat.")
+	broadcast (name ++ " has connected")
 	hPutStrLn hdl ("Welcome, " ++ name ++"!")
 
 	-- create new channel available from both locations.
