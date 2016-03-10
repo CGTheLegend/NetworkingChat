@@ -1,8 +1,8 @@
 import socket, select
 
+# Sends a message to the designamted socket
 def broadcast_data (sock, message):
-    # Sends a message to the designamted socket
-    for socket in CONNECTION_LIST:
+	for socket in CONNECTION_LIST:
 		# tests if socket is live
 		#  if it is, send message
 		#  else close socket
