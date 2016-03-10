@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 public class Protocol {
     // Different states
@@ -11,34 +12,35 @@ public class Protocol {
     // Starting state
     private int state = UNREGISTERED;
 
-    private String[] clues = { "Turnip", "Little Old Lady", "Atch", "Who", "Who" };
-    private String[] answers = { "Turnip the heat, it's cold in here!",
-                                 "I didn't know you could yodel!",
-                                 "Bless you!",
-                                 "Is there an owl in here?",
-                                 "Is there an echo in here?" };
+    // Users
+    ArrayList<String> users = new ArrayList<String>();
+    private String userName;
 
     // Handle input
     public String processInput(String theInput) {
         String theOutput = null;
 
+        // Unregisterd Case
         if (state == UNREGISTERED) {
             theOutput = "Please enter a username: ";
             state = REGISTERING;
+
+        // Registering Case
         } else if (state == REGISTERING) {
-            if (theInput.equalsIgnoreCase("Who's there?")) {
+            for (String string : users) {
+              if(string.matches(userName)){
                 theOutput = "Sorry, " + theInput + " is already taken.";
                 state = UNREGISTERED;
-            } else {
-                // user = theInput;
-                // userIp = someVar;
-                // state = REGISTERED;
-                // theOutput = "Welcome, " + user + "!";
-                // broadcastOutput = user + " has connected "
-
-                theOutput = "You're supposed to say \"Who's there?\"! " +
-                "Try again. Knock! Knock!";
+                return theOutput;
+              }
             }
+            userName = theInput;
+            users.add(userName);
+            state = REGISTERED;
+            theOutput = "Welcome, " + userName + "!";
+            // broadcastOutput = user + " has connected "
+
+        // Registered Case
         } else if (state == REGISTERED) {
             if (theInput.equalsIgnoreCase("/exit")) {
                 theOutput = " Want another? (y/n)";
