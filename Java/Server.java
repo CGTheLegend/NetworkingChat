@@ -57,13 +57,13 @@ public class  Server{
          if(name != null){
            users.add(name);
            output.println("Welcome " + name + "!");
-           broadcast(name, name + "has joined");
+           broadcast(name, " has joined.");
            start();
          }
     }
 
     public void sendMessage(String uname, String  msg){
-        output.println( uname + ":" + msg);
+        output.println( uname + ": " + msg);
     }
 
     public String getUserName(){
