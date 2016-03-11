@@ -44,9 +44,6 @@ if __name__ == "__main__":
                 print "Client (%s, %s) connected" % addr
                 user_names[str(sockfd.getpeername())] = None
                 sockfd.send("Please enter a username: ")
-                #broadcast_data(sockfd, "[%s:%s] entered room\n" % addr)
-
-            # send message
             else:
                 try:
                     data = sock.recv(RECV_BUFFER)
@@ -59,7 +56,6 @@ if __name__ == "__main__":
                         else:
                             broadcast_data(sock, "\r" + '<' + user_names[str(sock.getpeername())] + '> ' + data)
 
-                        #broadcast_data(sock, "\r" + '<' + str(sock.getpeername()) + '>' + data)
 
                 except:
                     broadcast_data(sock, "Client (%s,%s) is offline" % addr)

@@ -24,7 +24,7 @@ public class  Server{
   }
 
   public static void main(String ... args) throws Exception{
-      new Server2().process();
+      new Server().process();
   }
 
   public void boradcast(String user, String message){
@@ -93,8 +93,7 @@ public class  Server{
           }else if(name.equals(line)){
             output.println("OK");
           }else{
-            // Seems to me just adding this else part will do the trick for point one.
-            boradcast(name,line); // method  of outer class - send messages to all
+            boradcast(name,line);
           }
         }
       } catch(Exception e) {
