@@ -10,7 +10,6 @@ public class MultiServerThread extends Thread {
     }
 
     public void run() {
-
         try (
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(
@@ -33,4 +32,5 @@ public class MultiServerThread extends Thread {
             e.printStackTrace();
         }
     }
+    
 }

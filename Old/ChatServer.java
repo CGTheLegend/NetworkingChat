@@ -8,9 +8,8 @@ public class ChatServer implements Runnable{
 
    public ChatServer(int port){
      try{
-         System.out.println("Listening on port " + port);
          server = new ServerSocket(port);
-         System.out.println("Server started: " + server);
+         System.out.println("Listening on port " + port);
          start();
       }
       catch(IOException ioe){
@@ -38,7 +37,20 @@ public class ChatServer implements Runnable{
       catch(IOException ioe){
         System.out.println("Error opening thread: " + ioe); }
    }
-   public void start()                   { /* no change */ }
-   public void stop()                    { /* no change */ }
-   public static void main(String args[]){ /* no change */ }
+   public void start(){
+     if (thread == null){  thread = new Thread(this);
+         thread.start();
+      }
+   }
+   public void stop(){
+     if (thread != null){  thread.stop();
+         thread = null;
+      }
+   }
+   public static void main(String args[]){
+      ChatServer server = null;
+      int portNumber = 7000;
+
+      server = new ChatServer(portNumber);
+   }
 }

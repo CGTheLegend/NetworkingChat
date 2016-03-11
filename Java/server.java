@@ -11,7 +11,7 @@ public class Server {
         int portNumber = Integer.parseInt(Integer.toString(port));
         System.out.println("Listening on port " + portNumber + " . . . ");
 
-        // set up socket
+        // set up sockets and
         try (
             ServerSocket serverSocket = new ServerSocket(portNumber);
             Socket clientSocket = serverSocket.accept();

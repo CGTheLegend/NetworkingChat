@@ -43,12 +43,10 @@ public class Protocol {
         // Registered Case
         } else if (state == REGISTERED) {
             if (theInput.equalsIgnoreCase("/exit")) {
-                theOutput = " Want another? (y/n)";
+                theOutput = " left";
                 state = EXIT;
             } else {
-                theOutput = "You're supposed to say \"" +
-                " who?\"" +
-                "! Try again. Knock! Knock!";
+                theOutput = theInput;
             }
         }
         return theOutput;

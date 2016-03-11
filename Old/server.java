@@ -34,7 +34,7 @@ class AcceptTelnetClient extends Thread{
         start();
     }
 
-    publicvoid run(){
+    public void run(){
         try{
         DataInputStream dataIn=new DataInputStream(ClientSocket.getInputStream());
         DataOutputStream dataOut=new DataOutputStream(ClientSocket.getOutputStream());
