@@ -27,8 +27,7 @@ public class  Server{
       new Server().process();
   }
 
-  public void boradcast(String user, String message){
-    System.out.println(user + " : " + message);
+  public void broadcast(String user, String message){
     for (HandleClient c : clients){
       if (!c.getUserName().equals(user)){
         c.sendMessage(user,message);
@@ -87,13 +86,14 @@ public class  Server{
           line = input.readLine();
           if("EXIT".equals(line)){
             output.println("Closing Connection  . . . Goodbye");
+            broadcast(name, "Has left");
             clients.remove(this);
             users.remove(name);
             break;
           }else if(name.equals(line)){
             output.println("OK");
           }else{
-            boradcast(name,line);
+            broadcast(name, line);
           }
         }
       } catch(Exception e) {
