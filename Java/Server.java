@@ -57,6 +57,7 @@ public class  Server{
          if(name != null){
            users.add(name);
            output.println("Welcome " + name + "!");
+           broadcast(name, name + "has joined");
            start();
          }
     }
