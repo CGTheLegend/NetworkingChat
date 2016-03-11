@@ -3,7 +3,7 @@ import java.util.*;
 import java.net.*;
 import static java.lang.System.out;
 
-public class  Server2{
+public class  Server{
 
   Vector<String> users = new Vector<String>();
   Vector<HandleClient> clients = new Vector<HandleClient>();
